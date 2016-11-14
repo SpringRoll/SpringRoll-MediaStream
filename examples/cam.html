@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Webcam Example</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" href="assets/css/main.css">
+
+		<!-- Examples dependencies, these are only necessary for examples -->
+		<link rel="stylesheet" href="../components/google-code-prettify/bin/prettify.min.css">
+		<script src="../components/google-code-prettify/bin/prettify.min.js"></script>
+		<script src="../components/google-code-prettify/bin/run_prettify.min.js"></script>
+		<script src="assets/js/examples.js"></script>
+
+		<!-- External dependencies -->
+		<script src="../components/tweenjs/lib/tweenjs.min.js"></script>
+		<script src="../components/easeljs/lib/easeljs.combined.js"></script>
+		<script src="../components/easeljs/lib/movieclip.combined.js"></script>
+		<script src="../components/preloadjs/lib/preloadjs.min.js"></script>
+
+		<!-- SpringRoll and modules -->
+		<script src="../components/springroll/dist/core.js"></script>
+		<script src="../components/springroll/dist/modules/debug.js"></script>
+		<script src="../components/springroll/dist/modules/ui.js"></script>
+		<script src="../components/springroll/dist/modules/animation.js"></script>
+		<script src="../components/springroll/dist/modules/easeljs-display.js"></script>
+		<script src="../components/springroll/dist/modules/easeljs-ui.js"></script>
+		<script src="../components/springroll/dist/modules/easeljs-animation.js"></script>
+		
+		<!-- Library -->
+		<script src="../components/webrtc-adapter/release/adapter.js"></script>
+		<script src="../dist/mediastream.js"></script>
+
+	</head>
+	<body class="md">
+		<div id="content" class="canvas">
+			<nav>
+				<button id="canvas">Application</button>
+				<button id="code">Code</button>
+				<button id="back">Back</button>
+			</nav>
+			<div id="captions"></div>
+			<canvas id="stage" width="800" height="500"></canvas>
+			<pre id="codeDisplay"></pre>
+<script>
+
+var Application = include('springroll.Application'),
+	EaselJSDisplay = include('springroll.EaselJSDisplay'),
+	Bitmap = include('createjs.Bitmap'),
+	MediaStream = include('springroll.MediaStream');
+
+// Create the new application
+var app = new Application(
+{
+	resizeElement : "stageContainer",
+	framerate: "framerate",
+	canvasId: "stage",
+	display: EaselJSDisplay,
+	displayOptions: 
+	{
+		clearView: true // clear the stage on render
+	}
+});
+
+// Wait until the app is ready
+app.on('init', function()
+{
+	var stage = this.display.stage;
+	var options = {};
+	options.video = true;
+	options.audio = false;
+
+	var stream = new MediaStream(options);
+
+	stream.onLoad = function(data) 
+	{
+		if (data.error) 
+		{
+			console.log(data.error);
+			return;
+		}
+
+		var video = new Bitmap(data.video);
+
+		stage.addChild(video);
+		stage.update();
+	}
+	
+});
+
+</script>
+		</div>
+	</body>
+</html>

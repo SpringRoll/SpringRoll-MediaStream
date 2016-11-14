@@ -1,0 +1,10 @@
+{
+	"name": "MediaStream",
+	"version": "1.0.0",
+	"description": "A SpringRoll plugin to ease webcam and microphone use",
+	"url": "https://github.com/SpringRoll/SpringRoll-MediaStream",
+	"output": "mediastream",
+	"main": [
+		"src/MediaStream.js"
+	]
+}

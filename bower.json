@@ -1,0 +1,31 @@
+{
+	"name": "springroll-mediastream",
+	"version": "1.0.0",
+	"main": "dist/mediastream.min.js",
+	"dependencies": {
+		"springroll": "^0.4.25",
+		"webrtc-adapter": "~2.0.0"
+	},
+	"devDependencies": {
+		"easeljs": "https://github.com/SpringRoll/EaselJS.git",
+		"tweenjs": "https://github.com/SpringRoll/TweenJS.git",
+		"google-code-prettify": "*",
+		"bind-polyfill": "*"
+	},
+	"ignore": [
+		"Gruntfile.js",
+		"tasks",
+		"examples",
+		"docs",
+		"src",
+		"test",
+		"tools",
+		".bowerrc",
+		".editorconfig",
+		".travis.yml",
+		".gitattributes",
+		"library.json",
+		"package.json",
+		".gitignore"
+	]
+}

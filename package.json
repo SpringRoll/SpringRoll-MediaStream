@@ -1,0 +1,25 @@
+{
+	"name": "springroll-mediastream",
+	"version": "1.0.0",
+	"main": "dist/mediastream.min.js",
+	"dependencies": {
+		"grunt": "~0.4.5",
+		"library-grunt": "~0.6.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/SpringRoll/SpringRoll-MediaStream"
+	},
+	"bugs": {
+		"url": "https://github.com/SpringRoll/SpringRoll-MediaStream/issues"
+	},
+	"keywords": [
+		"webcam",
+		"microphone",
+		"streaming",
+		"input",
+		"springroll",
+		"educational"
+	],
+	"license": "MIT"
+}
