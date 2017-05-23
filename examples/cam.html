@@ -82,11 +82,155 @@ app.on('init', function()
 			return;
 		}
 
+		var r = {};
+		var g = {};
+		var b = {};
+		var x = {};
+		var y = {};
+
+		r.current = 0;
+		r.selected = 0;
+		r.isColor = false;
+		
+		g.current = 0;
+		g.selected = 255;
+		g.isColor = false;
+
+		b.current = 0;
+		b.selected = 0;
+		b.isColor = false;
+
+		x.pos = 0;
+		x.total = 0;
+		x.list = [];
+
+		y.pos = 0;
+		y.total = 0;
+		y.list = [];
+
+		var imgData, width, height;
 		var video = new Bitmap(data.video);
+		var line = new createjs.Shape();
+		var graphics = line.graphics;
+		var scale = 12;
+		var buffer = 0;
+		var avgCount = 0;
 
 		stage.addChild(video);
+		stage.addChild(line);
 		stage.update();
-	}
+
+		graphics.setStrokeStyle(1);
+
+		stage.on("stagemousedown", function(e) {
+			var x = Math.floor(e.stageX);
+			var y = Math.floor(e.stageY);
+
+			if (x > width || y > height) {
+				return;
+			}
+
+			var pos = ((y * width) + x) * 4;
+
+			buffer = 15;
+
+			r.selected = getColorVal(pos);
+			g.selected = getColorVal(pos+1);
+			b.selected = getColorVal(pos+2);
+		});
+
+		var getColorVal = function(val) {
+			var cases = [val, val-4, val+4, val-(width*4), val+(width*4)];
+			var returnVal = 0;
+			for (var i = cases.length - 1; i >= 0; i--) {
+				returnVal += imgData[cases[i]];
+			}
+
+			return returnVal/cases.length-1;
+		};
+
+		function quickSort(arr) {
+			if (arr.length <= 1) {
+				return arr;
+			}
+			var pivot = arr.splice(Math.floor(arr.length / 2), 1)[0];
+			var left = [];
+			var right = [];
+			for (var i = 0; i < arr.length; i++) {
+				if (arr[i] < pivot) {
+					left.push(arr[i]);
+				} else {
+					right.push(arr[i]);
+				}
+			}
+
+			return quickSort(left).concat([pivot], quickSort(right));
+		}
+  
+		var context = stage.canvas.getContext('2d');
+		var arrayPos;
+
+		app.on("update", function() 
+		{
+			width = video.image.videoWidth;
+			height = video.image.videoHeight;
+
+			if (width > 0 && height > 0) {
+				imgData = context.getImageData(0, 0, width, height).data;
+				for (var i = (imgData.length / scale) - 1; i >= 0; i--) {
+
+					arrayPos = i * scale;
+
+					r.current = imgData[arrayPos];
+					r.isColor = r.current > r.selected-buffer && r.current < r.selected+buffer;
+
+					if (!r.isColor) {continue;}
+
+					g.current = imgData[arrayPos+1];
+					g.isColor = g.current > g.selected-buffer && g.current < g.selected+buffer;
+
+					if (!g.isColor) {continue;}
+
+					b.current = imgData[arrayPos+2];
+					b.isColor = b.current > b.selected-buffer && b.current < b.selected+buffer;
+
+					if (!b.isColor) {continue;}
+
+					y.pos = (arrayPos / width / 4);
+					x.pos = width * (y.pos % 1);
+
+					x.list.push(x.pos);
+					y.list.push(y.pos);
+
+				}
+				
+				graphics.clear();
+
+				if (x.list.length > 5 && y.list.length > 5) {        		
+	        		x.list = quickSort(x.list);
+	        		y.list = quickSort(y.list);
+
+	        		if (avgCount > 30) {
+						avgCount = 0;
+						x.total = 0;
+						y.total = 0;
+	        		}
+
+					avgCount++;
+
+					x.total += x.list[x.list.length - 2] - x.list[1];
+					y.total += y.list[y.list.length - 2] - y.list[1];
+
+					graphics.beginStroke("#00ff00");
+		    		graphics.drawRect(x.list[1], y.list[1], x.total/avgCount, y.total/avgCount);
+					graphics.endStroke();
+
+					x.list.length = 0;
+					y.list.length = 0;
+				}
+			}
+		});
+	};
 	
 });
 
